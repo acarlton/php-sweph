@@ -53,6 +53,7 @@ zend_function_entry sweph_functions[] = {
 	PHP_FE(swe_get_ayanamsa_ut, NULL)
 	PHP_FE(swe_get_ayanamsa_name, NULL)
 	PHP_FE(swe_version, NULL)
+	PHP_FE(swe_get_library_path, NULL)
 
 	/**************************** 
 	 * exports from swedate.c 
@@ -698,6 +699,14 @@ PHP_FUNCTION(swe_version)
 	if(ZEND_NUM_ARGS() != 0) WRONG_PARAM_COUNT;
 
 	RETURN_STRING(swe_version(name));
+}
+
+PHP_FUNCTION(swe_get_library_path)
+{
+	char path[AS_MAXCH];
+	if(ZEND_NUM_ARGS() != 0) WRONG_PARAM_COUNT;
+
+	RETURN_STRING(swe_get_library_path(path));
 }
 
 /**************************** 
