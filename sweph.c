@@ -576,7 +576,7 @@ PHP_FUNCTION(swe_close)
 PHP_FUNCTION(swe_set_ephe_path)
 {
 	char *arg = NULL;
-	int arg_len, rc;
+	size_t arg_len;
 
 	if(ZEND_NUM_ARGS() != 1) WRONG_PARAM_COUNT;
 
