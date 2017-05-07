@@ -104,6 +104,7 @@ PHP_FUNCTION(swe_rise_trans);
 PHP_FUNCTION(swe_rise_trans_true_hor);
 PHP_FUNCTION(swe_nod_aps);
 PHP_FUNCTION(swe_nod_aps_ut);
+PHP_FUNCTION(swe_get_orbital_elements);
 
 /**************************** 
  * exports from swephlib.c 

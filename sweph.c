@@ -101,6 +101,7 @@ zend_function_entry sweph_functions[] = {
 	PHP_FE(swe_rise_trans_true_hor, NULL)
 	PHP_FE(swe_nod_aps, NULL)
 	PHP_FE(swe_nod_aps_ut, NULL)
+	PHP_FE(swe_get_orbital_elements, NULL)
 		
 	/**************************** 
 	 * exports from swephlib.c 
@@ -209,7 +210,7 @@ PHP_MINIT_FUNCTION(sweph)
 	REGISTER_LONG_CONSTANT("SE_ECL_NUT", SE_ECL_NUT, CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("SE_SUN", SE_SUN, CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("SE_MOON", SE_MOON, CONST_CS | CONST_PERSISTENT);
-	REGISTER_LONG_CONSTANT("SE_MERCURY", SE_MERCURY  , CONST_CS | CONST_PERSISTENT);
+	REGISTER_LONG_CONSTANT("SE_MERCURY", SE_MERCURY, CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("SE_VENUS", SE_VENUS    , CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("SE_MARS", SE_MARS     , CONST_CS | CONST_PERSISTENT);
 	REGISTER_LONG_CONSTANT("SE_JUPITER", SE_JUPITER  , CONST_CS | CONST_PERSISTENT);
@@ -1909,6 +1910,36 @@ PHP_FUNCTION(swe_nod_aps_ut)
 		add_assoc_zval(return_value, "xndsc", &xndsc_arr);
 		add_assoc_zval(return_value, "xnperi", &xperi_arr);
 		add_assoc_zval(return_value, "xnaphe", &xaphe_arr);
+	}
+}
+
+PHP_FUNCTION(swe_get_orbital_elements)
+{
+	int arg_len, rc, ipl, iflag;
+	double tjd_et, dret[50];
+	char serr[AS_MAXCH];
+	zval dret_arr;
+	int i;
+
+	if(ZEND_NUM_ARGS() != 3) WRONG_PARAM_COUNT;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "dll",
+	    &tjd_et, &ipl, &iflag) == FAILURE) {
+		return;
+	}
+	rc = swe_get_orbital_elements(tjd_et, ipl, iflag, dret, serr);
+
+	array_init(return_value);
+	add_assoc_long(return_value, "rc", rc);
+
+	if (rc == ERR) {
+		add_assoc_string(return_value, "serr", serr);
+	} else {
+		array_init(&dret_arr);
+		for (i = 0; i < 50; i++) {
+			add_index_double(&dret_arr, i, dret[i]);
+		}
+		add_assoc_zval(return_value, "dret", &dret_arr);
 	}
 }
 
