@@ -43,6 +43,7 @@ zend_function_entry sweph_functions[] = {
 	PHP_FE(swe_calc_ut, NULL)
 	PHP_FE(swe_fixstar, NULL)
 	PHP_FE(swe_fixstar_ut, NULL)
+	PHP_FE(swe_fixstar_mag, NULL)
 	PHP_FE(swe_close, NULL)
 	PHP_FE(swe_set_ephe_path, NULL)
 	PHP_FE(swe_set_jpl_file, NULL)
@@ -524,9 +525,7 @@ PHP_FUNCTION(swe_fixstar)
 	}
 	memset(star, 0, MAX_FIXSTAR_NAME);
 	strncpy(star, star_ptr, star_len);
-	php_printf("%s", star);
 	rc = swe_fixstar(star, tjd_et, (int)iflag, xx, serr);
-	php_printf("%s %s %d\n", star, serr, rc);
 
 	array_init(return_value);
 	for(i = 0; i < 6; i++)
@@ -562,6 +561,32 @@ PHP_FUNCTION(swe_fixstar_ut)
 	for(i = 0; i < 6; i++)
 		add_index_double(return_value, i, xx[i]);
 	add_assoc_string(return_value, "star", star);
+	add_assoc_string(return_value, "serr", serr);
+	add_assoc_long(return_value, "rc", rc);
+}
+
+PHP_FUNCTION(swe_fixstar_mag)
+{
+	char *arg = NULL;
+	int rc;
+	char *star_ptr = NULL;
+	size_t star_len;
+	double mag;
+	char star[MAX_FIXSTAR_NAME], serr[AS_MAXCH];
+
+	if(ZEND_NUM_ARGS() != 1) WRONG_PARAM_COUNT;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s",
+	        &star_ptr, &star_len) == FAILURE) {
+		return;
+	}
+	memset(star, 0, MAX_FIXSTAR_NAME);
+	strncpy(star, star_ptr, star_len);
+	rc = swe_fixstar_mag(&star, &mag, serr);
+
+	array_init(return_value);
+	add_assoc_string(return_value, "star", star);
+	add_assoc_double(return_value, "mag", mag);
 	add_assoc_string(return_value, "serr", serr);
 	add_assoc_long(return_value, "rc", rc);
 }
