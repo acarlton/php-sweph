@@ -102,6 +102,7 @@ zend_function_entry sweph_functions[] = {
 	PHP_FE(swe_nod_aps, NULL)
 	PHP_FE(swe_nod_aps_ut, NULL)
 	PHP_FE(swe_get_orbital_elements, NULL)
+	PHP_FE(swe_orbit_max_min_true_distance, NULL)
 		
 	/**************************** 
 	 * exports from swephlib.c 
@@ -1915,13 +1916,12 @@ PHP_FUNCTION(swe_nod_aps_ut)
 
 PHP_FUNCTION(swe_get_orbital_elements)
 {
-	int arg_len, rc, ipl, iflag;
+	int rc, ipl, iflag, i;
 	double tjd_et, dret[50];
 	char serr[AS_MAXCH];
 	zval dret_arr;
-	int i;
 
-	if(ZEND_NUM_ARGS() != 3) WRONG_PARAM_COUNT;
+	if (ZEND_NUM_ARGS() != 3) WRONG_PARAM_COUNT;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "dll",
 	    &tjd_et, &ipl, &iflag) == FAILURE) {
@@ -1940,6 +1940,33 @@ PHP_FUNCTION(swe_get_orbital_elements)
 			add_index_double(&dret_arr, i, dret[i]);
 		}
 		add_assoc_zval(return_value, "dret", &dret_arr);
+	}
+}
+
+PHP_FUNCTION(swe_orbit_max_min_true_distance)
+{
+	int rc, ipl, iflag;
+	double tjd_et, dmax, dmin, dtrue;
+	char serr[AS_MAXCH];
+
+	if (ZEND_NUM_ARGS() != 3) WRONG_PARAM_COUNT;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "dll",
+		&tjd_et, &ipl, &iflag) == FAILURE) {
+		return;
+	}
+
+	rc = swe_orbit_max_min_true_distance(tjd_et, ipl, iflag, &dmax, &dmin, &dtrue, serr);
+
+	array_init(return_value);
+	add_assoc_long(return_value, "rc", rc);
+
+	if (rc == ERR) {
+		add_assoc_string(return_value, "serr", serr);
+	} else {
+		add_assoc_double(return_value, "dmax", dmax);
+		add_assoc_double(return_value, "dmin", dmin);
+		add_assoc_double(return_value, "dtrue", dtrue);
 	}
 }
 
