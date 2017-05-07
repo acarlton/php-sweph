@@ -1,14 +1,13 @@
 /*
   +----------------------------------------------------------------------+
-  | PHP Version 5 Swiss Ephemeris extension                              |
+  | PHP Version 7 Swiss Ephemeris extension                              |
   +----------------------------------------------------------------------+
-  | Copyright (c) 2007-2014                                              |
+  | Copyright (c) 2017                                                   |
   +----------------------------------------------------------------------+
-  | Author: Joel Chen (cyjoelchen@gmail.com)                             |
+  | Author: Carlucci                                                     |
+  |   Adapted from Joel Chen:                                            |
+  |     https://github.com/cyjoelchen/php-sweph                          |
   +----------------------------------------------------------------------+
-
-  $Id$
-  
 */
 
 #ifdef HAVE_CONFIG_H

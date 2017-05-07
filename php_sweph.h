@@ -1,14 +1,13 @@
 /*
   +----------------------------------------------------------------------+
-  | PHP Version 4 Swiss Ephemeris extension                              |
+  | PHP Version 7 Swiss Ephemeris extension                              |
   +----------------------------------------------------------------------+
-  | Copyright (c) 2007-2014                                              |
+  | Copyright (c) 2017                                                   |
   +----------------------------------------------------------------------+
-  | Author: Joel Chen                                                    |
+  | Author: Carlucci                                                     |
+  |   Adapted from Joel Chen:                                            |
+  |     https://github.com/cyjoelchen/php-sweph                          |
   +----------------------------------------------------------------------+
-
-  $Id: php_sweph.h 10 2007-01-26 16:37:31Z joel $
-  
 */
 
 #ifndef PHP_SWEPH_H
