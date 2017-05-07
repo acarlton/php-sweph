@@ -582,7 +582,7 @@ PHP_FUNCTION(swe_fixstar_mag)
 	}
 	memset(star, 0, MAX_FIXSTAR_NAME);
 	strncpy(star, star_ptr, star_len);
-	rc = swe_fixstar_mag(&star, &mag, serr);
+	rc = swe_fixstar_mag(star, &mag, serr);
 
 	array_init(return_value);
 	add_assoc_string(return_value, "star", star);
@@ -1819,16 +1819,16 @@ PHP_FUNCTION(swe_nod_aps)
 	double tjd_et, xnasc[6], xndsc[6], xperi[6], xaphe[6];
 	char serr[AS_MAXCH]; 
 	int i;
-	zval *xnasc_arr, *xndsc_arr, *xperi_arr, *xaphe_arr;
+	zval xnasc_arr, xndsc_arr, xperi_arr, xaphe_arr;
 
-	if(ZEND_NUM_ARGS() != 10) WRONG_PARAM_COUNT;
+	if(ZEND_NUM_ARGS() != 4) WRONG_PARAM_COUNT;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "dlll",
 			&tjd_et, &ipl, &iflag, &method,
 			&arg_len) == FAILURE) {
 		return;
 	}
-	rc = swe_nod_aps_ut(tjd_et, ipl, iflag, method, xnasc, xndsc, xperi, xaphe, serr);
+	rc = swe_nod_aps(tjd_et, ipl, iflag, method, xnasc, xndsc, xperi, xaphe, serr);
 
 	array_init(return_value);
 	add_assoc_long(return_value, "retflag", rc);
@@ -1839,30 +1839,26 @@ PHP_FUNCTION(swe_nod_aps)
 	}
 	else
 	{
-		MAKE_STD_ZVAL(xnasc_arr);
-		array_init(xnasc_arr);
+		array_init(&xnasc_arr);
 		for(i = 0; i < 6; i++)
-			add_index_double(xnasc_arr, i, xnasc[i]);
+			add_index_double(&xnasc_arr, i, xnasc[i]);
 
-		MAKE_STD_ZVAL(xndsc_arr);
-		array_init(xndsc_arr);
+		array_init(&xndsc_arr);
 		for(i = 0; i < 6; i++)
-			add_index_double(xndsc_arr, i, xndsc[i]);
+			add_index_double(&xndsc_arr, i, xndsc[i]);
 
-		MAKE_STD_ZVAL(xperi_arr);
-		array_init(xperi_arr);
+		array_init(&xperi_arr);
 		for(i = 0; i < 6; i++)
-			add_index_double(xperi_arr, i, xperi[i]);
+			add_index_double(&xperi_arr, i, xperi[i]);
 
-		MAKE_STD_ZVAL(xaphe_arr);
-		array_init(xaphe_arr);
+		array_init(&xaphe_arr);
 		for(i = 0; i < 6; i++)
-			add_index_double(xaphe_arr, i, xaphe[i]);
+			add_index_double(&xaphe_arr, i, xaphe[i]);
 			
-		add_assoc_zval(return_value, "xnasc", xnasc_arr);
-		add_assoc_zval(return_value, "xndsc", xndsc_arr);
-		add_assoc_zval(return_value, "xnperi", xperi_arr);
-		add_assoc_zval(return_value, "xnaphe", xaphe_arr);
+		add_assoc_zval(return_value, "xnasc", &xnasc_arr);
+		add_assoc_zval(return_value, "xndsc", &xndsc_arr);
+		add_assoc_zval(return_value, "xnperi", &xperi_arr);
+		add_assoc_zval(return_value, "xnaphe", &xaphe_arr);
 	}
 }
 
