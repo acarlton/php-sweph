@@ -1172,7 +1172,7 @@ PHP_FUNCTION(swe_sol_eclipse_where)
 	double tjd_ut, geopos[2], attr[20];
 	char serr[AS_MAXCH]; 
 	int i;
-	zval *geopos_arr, *attr_arr;
+	zval geopos_arr, attr_arr;
 
 	if(ZEND_NUM_ARGS() != 2) WRONG_PARAM_COUNT;
 
@@ -1191,19 +1191,17 @@ PHP_FUNCTION(swe_sol_eclipse_where)
 	}
 	else
 	{
-		MAKE_STD_ZVAL(geopos_arr);
-		array_init(geopos_arr);
+		array_init(&geopos_arr);
 		
 		for(i = 0; i < 2; i++)
-			add_index_double(geopos_arr, i, geopos[i]);
+			add_index_double(&geopos_arr, i, geopos[i]);
 	
-		MAKE_STD_ZVAL(attr_arr);
-		array_init(attr_arr);
+		array_init(&attr_arr);
 		for(i = 0; i < 20; i++)
-			add_index_double(attr_arr, i, attr[i]);
+			add_index_double(&attr_arr, i, attr[i]);
 		
-		add_assoc_zval(return_value, "geopos", geopos_arr);
-		add_assoc_zval(return_value, "attr", attr_arr);
+		add_assoc_zval(return_value, "geopos", &geopos_arr);
+		add_assoc_zval(return_value, "attr", &attr_arr);
 	}
 }
 
