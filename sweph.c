@@ -1328,11 +1328,11 @@ PHP_FUNCTION(swe_lun_occult_when_loc)
 	char serr[AS_MAXCH], *starname = NULL; 
 	int i;
 	int backward;
-	zval *tret_arr, *attr_arr;
+	zval tret_arr, attr_arr;
 
-	if(ZEND_NUM_ARGS() != 6) WRONG_PARAM_COUNT;
+	if(ZEND_NUM_ARGS() != 8) WRONG_PARAM_COUNT;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "dlsldddl",
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "dlslllll",
 			&tjd_start, &ipl, &starname, &ifl, &geopos[0], &geopos[1],
 			&geopos[2], &backward, &arg_len) == FAILURE) {
 		return;
@@ -1349,18 +1349,15 @@ PHP_FUNCTION(swe_lun_occult_when_loc)
 	}
 	else
 	{
-		MAKE_STD_ZVAL(tret_arr);
-		array_init(tret_arr);
+		array_init(&tret_arr);
 		for(i = 0; i < 10; i++)
-			add_index_double(tret_arr, i, attr[i]);
-		add_assoc_zval(return_value, "tret", tret_arr);
+			add_index_double(&tret_arr, i, attr[i]);
+		add_assoc_zval(return_value, "tret", &tret_arr);
 
-		MAKE_STD_ZVAL(attr_arr);
-		array_init(attr_arr);
+		array_init(&attr_arr);
 		for(i = 0; i < 20; i++)
-			add_index_double(attr_arr, i, attr[i]);
-		
-		add_assoc_zval(return_value, "attr", attr_arr);
+			add_index_double(&attr_arr, i, attr[i]);
+		add_assoc_zval(return_value, "attr", &attr_arr);
 	}
 }
 
