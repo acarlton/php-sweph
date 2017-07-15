@@ -1591,7 +1591,7 @@ PHP_FUNCTION(swe_pheno_ut)
 	double tjd_ut, attr[20];
 	char serr[AS_MAXCH]; 
 	int i;
-	zval *attr_arr;
+	zval attr_arr;
 
 	if(ZEND_NUM_ARGS() != 3) WRONG_PARAM_COUNT;
 
@@ -1610,13 +1610,12 @@ PHP_FUNCTION(swe_pheno_ut)
 	}
 	else
 	{
-		MAKE_STD_ZVAL(attr_arr);
-		array_init(attr_arr);
+		array_init(&attr_arr);
 		
 		for(i = 0; i < 20; i++)
-			add_index_double(attr_arr, i, attr[i]);
+			add_index_double(&attr_arr, i, attr[i]);
 			
-		add_assoc_zval(return_value, "attr", attr_arr);
+		add_assoc_zval(return_value, "attr", &attr_arr);
 	}
 }
 
