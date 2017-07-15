@@ -1510,7 +1510,7 @@ PHP_FUNCTION(swe_lun_eclipse_when_loc)
 	double tjd_ut, geopos[3], tret[10], attr[20];
 	char serr[AS_MAXCH], *starname = NULL;
 	int i, backward;
-	zval *tret_arr, *attr_arr;
+	zval tret_arr, attr_arr;
 
 	if(ZEND_NUM_ARGS() != 6) WRONG_PARAM_COUNT;
 
@@ -1529,19 +1529,17 @@ PHP_FUNCTION(swe_lun_eclipse_when_loc)
 	}
 	else
 	{
-		MAKE_STD_ZVAL(tret_arr);
-		array_init(tret_arr);
+		array_init(&tret_arr);
 
 		for(i = 0; i < 10; i++)
-			add_index_double(tret_arr, i, tret[i]);
-		add_assoc_zval(return_value, "tret", tret_arr);	
+			add_index_double(&tret_arr, i, tret[i]);
+		add_assoc_zval(return_value, "tret", &tret_arr);	
 
-		MAKE_STD_ZVAL(attr_arr);
-		array_init(attr_arr);
+		array_init(&attr_arr);
 
 		for(i = 0; i < 20; i++)
-			add_index_double(attr_arr, i, attr[i]);			
-		add_assoc_zval(return_value, "attr", attr_arr);
+			add_index_double(&attr_arr, i, attr[i]);			
+		add_assoc_zval(return_value, "attr", &attr_arr);
 	}
 }
 
