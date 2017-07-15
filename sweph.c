@@ -1208,16 +1208,16 @@ PHP_FUNCTION(swe_sol_eclipse_where)
 PHP_FUNCTION(swe_lun_occult_where)
 {
 	char *arg = NULL;
-	int arg_len, ipl, ifl, rc;
+	int arg_len, ipl, ifl, rc, s_len;
 	double tjd_ut, geopos[2], attr[20];
 	char serr[AS_MAXCH], *starname = NULL; 
 	int i;
-	zval *geopos_arr, *attr_arr;
+	zval geopos_arr, attr_arr;
 
 	if(ZEND_NUM_ARGS() != 4) WRONG_PARAM_COUNT;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "dlsd",
-			&tjd_ut, &ipl, &starname, &ifl, &arg_len) == FAILURE) {
+			&tjd_ut, &ipl, &starname, &s_len, &ifl, &arg_len) == FAILURE) {
 		return;
 	}
 	rc = swe_lun_occult_where(tjd_ut, ipl, starname, ifl, geopos, attr, serr);
@@ -1231,19 +1231,17 @@ PHP_FUNCTION(swe_lun_occult_where)
 	}
 	else
 	{
-		MAKE_STD_ZVAL(geopos_arr);
-		array_init(geopos_arr);
+		array_init(&geopos_arr);
 		
 		for(i = 0; i < 2; i++)
-			add_index_double(geopos_arr, i, geopos[i]);
+			add_index_double(&geopos_arr, i, geopos[i]);
 	
-		MAKE_STD_ZVAL(attr_arr);
-		array_init(attr_arr);
+		array_init(&attr_arr);
 		for(i = 0; i < 20; i++)
-			add_index_double(attr_arr, i, attr[i]);
+			add_index_double(&attr_arr, i, attr[i]);
 		
-		add_assoc_zval(return_value, "geopos", geopos_arr);
-		add_assoc_zval(return_value, "attr", attr_arr);
+		add_assoc_zval(return_value, "geopos", &geopos_arr);
+		add_assoc_zval(return_value, "attr", &attr_arr);
 	}
 }
 
@@ -1399,19 +1397,19 @@ PHP_FUNCTION(swe_sol_eclipse_when_glob)
 PHP_FUNCTION(swe_lun_occult_when_glob)
 {
 	char *arg = NULL;
-	int arg_len, rc, ipl, ifl, ifltype;
+	int arg_len, rc, ipl, s_len, ifl, ifltype, backward;
 	double tjd_start, tret[10];
 	char serr[AS_MAXCH], *starname = NULL; 
-	int i, backward;
-	zval *tret_arr;
+	int i;
+	zval tret_arr;
 
 	if(ZEND_NUM_ARGS() != 6) WRONG_PARAM_COUNT;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "dlslll",
-			&tjd_start, &ipl, &starname, &ifl, &ifltype, 
-			&backward, &arg_len) == FAILURE) {
+		    &tjd_start, &ipl, &starname, &s_len, &ifl, &ifltype, &backward, &arg_len) == FAILURE) {
 		return;
 	}
+
 	rc = swe_lun_occult_when_glob(tjd_start, ipl, starname, ifl, ifltype,
 			tret, backward, serr);
 
@@ -1424,13 +1422,12 @@ PHP_FUNCTION(swe_lun_occult_when_glob)
 	}
 	else
 	{
-		MAKE_STD_ZVAL(tret_arr);
-		array_init(tret_arr);
+		array_init(&tret_arr);
 		
 		for(i = 0; i < 10; i++)
-			add_index_double(tret_arr, i, tret[i]);
+			add_index_double(&tret_arr, i, tret[i]);
 			
-		add_assoc_zval(return_value, "tret", tret_arr);
+		add_assoc_zval(return_value, "tret", &tret_arr);
 	}
 }
 
@@ -1563,6 +1560,7 @@ PHP_FUNCTION(swe_pheno)
 			&tjd, &ipl, &iflag, &arg_len) == FAILURE) {
 		return;
 	}
+
 	rc = swe_pheno(tjd, ipl, iflag, attr, serr);
 
 	array_init(return_value);
