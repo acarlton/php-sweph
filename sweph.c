@@ -1722,7 +1722,7 @@ PHP_FUNCTION(swe_rise_trans)
 	double tjd_ut, geopos[3], tret[10], atpress, attemp;
 	char serr[AS_MAXCH], *starname = NULL; 
 	int i;
-	zval *tret_arr;
+	zval tret_arr;
 
 	if(ZEND_NUM_ARGS() != 10) WRONG_PARAM_COUNT;
 
@@ -1745,13 +1745,12 @@ PHP_FUNCTION(swe_rise_trans)
 	}
 	else
 	{
-		MAKE_STD_ZVAL(tret_arr);
-		array_init(tret_arr);
+		array_init(&tret_arr);
 		
 		for(i = 0; i < 10; i++)
-			add_index_double(tret_arr, i, tret[i]);
+			add_index_double(&tret_arr, i, tret[i]);
 			
-		add_assoc_zval(return_value, "tret", tret_arr);
+		add_assoc_zval(return_value, "tret", &tret_arr);
 	}
 }
 
@@ -1763,7 +1762,7 @@ PHP_FUNCTION(swe_rise_trans_true_hor)
 	double tjd_ut, geopos[3], tret[10], atpress, attemp, horhgt;
 	char serr[AS_MAXCH], *starname = NULL; 
 	int i;
-	zval *tret_arr;
+	zval tret_arr;
 
 	if(ZEND_NUM_ARGS() != 11) WRONG_PARAM_COUNT;
 
@@ -1786,13 +1785,12 @@ PHP_FUNCTION(swe_rise_trans_true_hor)
 	}
 	else
 	{
-		MAKE_STD_ZVAL(tret_arr);
-		array_init(tret_arr);
+		array_init(&tret_arr);
 		
 		for(i = 0; i < 10; i++)
-			add_index_double(tret_arr, i, tret[i]);
+			add_index_double(&tret_arr, i, tret[i]);
 			
-		add_assoc_zval(return_value, "tret", tret_arr);
+		add_assoc_zval(return_value, "tret", &tret_arr);
 	}
 }
 
