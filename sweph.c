@@ -1698,9 +1698,9 @@ PHP_FUNCTION(swe_azalt_rev)
 	double tjd_ut, geopos[3], xin[2], xout[3];
 	int i;
 
-	if(ZEND_NUM_ARGS() != 10) WRONG_PARAM_COUNT;
+	if(ZEND_NUM_ARGS() != 7) WRONG_PARAM_COUNT;
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "dddl",
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "dlddddd",
 			&tjd_ut, &calc_flag, 
 			&geopos[0], &geopos[1], &geopos[2], 
 			&xin[0], &xin[1], 
