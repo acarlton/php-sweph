@@ -944,15 +944,15 @@ PHP_FUNCTION(swe_utc_time_zone)
  ****************************/
 PHP_FUNCTION(swe_houses)
 {
-	char *arg = NULL;
-	int hsys_len, rc;
-	char *hsys = NULL;
+	char *arg = NULL, *hsys = NULL;
+	size_t hsys_len;
+	int rc;
 	double tjd_ut, geolat, geolon;
 	double cusps[37], ascmc[10]; 
 	int i, houses;
-	zval *cusps_arr, *ascmc_arr;
-	
-	if(ZEND_NUM_ARGS() != 4) WRONG_PARAM_COUNT;
+	zval cusps_arr, ascmc_arr;
+
+	if (ZEND_NUM_ARGS() != 4) WRONG_PARAM_COUNT;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "ddds",
 			&tjd_ut, &geolat, &geolon, &hsys, &hsys_len) == FAILURE) {
@@ -960,30 +960,26 @@ PHP_FUNCTION(swe_houses)
 	}
 	if (hsys_len < 1)
 		return;
-		
+
 	rc = swe_houses(tjd_ut, geolat, geolon, hsys[0], cusps, ascmc);
 
 	/* create 2 index array, and 1 assoc array */
 	array_init(return_value);
 	
-	MAKE_STD_ZVAL(cusps_arr);
-	array_init(cusps_arr);
-	
+	array_init(&cusps_arr);
 	if (hsys[0] == 'G')
 		houses = 37;
 	else
 		houses = 13;
-		
 	for(i = 0; i < houses; i++)
-		add_index_double(cusps_arr, i, cusps[i]);
+		add_index_double(&cusps_arr, i, cusps[i]);
 
-	MAKE_STD_ZVAL(ascmc_arr);
-	array_init(ascmc_arr);
+	array_init(&ascmc_arr);
 	for(i = 0; i < 10; i++)
-		add_index_double(ascmc_arr, i, ascmc[i]);
+		add_index_double(&ascmc_arr, i, ascmc[i]);
 		
-	add_assoc_zval(return_value, "cusps", cusps_arr);
-	add_assoc_zval(return_value, "ascmc", ascmc_arr);
+	add_assoc_zval(return_value, "cusps", &cusps_arr);
+	add_assoc_zval(return_value, "ascmc", &ascmc_arr);
 	add_assoc_long(return_value, "rc", rc);
 }
 
@@ -1141,6 +1137,7 @@ PHP_FUNCTION(swe_gauquelin_sector)
 	char *arg = NULL;
 	int arg_len, ipl, iflag, imeth, rc;
 	char *starname = NULL;
+	size_t s_len;
 	double t_ut, geopos[3], atpress, attemp, dgsect;
 	char serr[AS_MAXCH]; 
 	int i;
@@ -1148,7 +1145,7 @@ PHP_FUNCTION(swe_gauquelin_sector)
 	if(ZEND_NUM_ARGS() != 10) WRONG_PARAM_COUNT;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "dlsllddddd",
-			&t_ut, &ipl, &starname, &iflag, &imeth, &geopos[0],
+			&t_ut, &ipl, &starname, &s_len, &iflag, &imeth, &geopos[0],
 			&geopos[1], &geopos[2], &atpress, &attemp, &arg_len) == FAILURE) {
 		return;
 	}
@@ -1208,9 +1205,10 @@ PHP_FUNCTION(swe_sol_eclipse_where)
 PHP_FUNCTION(swe_lun_occult_where)
 {
 	char *arg = NULL;
-	int arg_len, ipl, ifl, rc, s_len;
+	int arg_len, ipl, ifl, rc;
 	double tjd_ut, geopos[2], attr[20];
-	char serr[AS_MAXCH], *starname = NULL; 
+	char serr[AS_MAXCH], *starname = NULL;
+	size_t s_len;
 	int i;
 	zval geopos_arr, attr_arr;
 
@@ -1323,7 +1321,8 @@ PHP_FUNCTION(swe_lun_occult_when_loc)
 	char *arg = NULL;
 	int arg_len, ipl, ifl, rc;
 	double tjd_start, geopos[3], tret[10], attr[20];
-	char serr[AS_MAXCH], *starname = NULL; 
+	char serr[AS_MAXCH], *starname = NULL;
+	size_t s_len;
 	int i;
 	int backward;
 	zval tret_arr, attr_arr;
@@ -1331,7 +1330,7 @@ PHP_FUNCTION(swe_lun_occult_when_loc)
 	if(ZEND_NUM_ARGS() != 8) WRONG_PARAM_COUNT;
 
 	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "dlslllll",
-			&tjd_start, &ipl, &starname, &ifl, &geopos[0], &geopos[1],
+			&tjd_start, &ipl, &starname, &s_len, &ifl, &geopos[0], &geopos[1],
 			&geopos[2], &backward, &arg_len) == FAILURE) {
 		return;
 	}
@@ -1397,9 +1396,10 @@ PHP_FUNCTION(swe_sol_eclipse_when_glob)
 PHP_FUNCTION(swe_lun_occult_when_glob)
 {
 	char *arg = NULL;
-	int arg_len, rc, ipl, s_len, ifl, ifltype, backward;
+	int arg_len, rc, ipl, ifl, ifltype, backward;
 	double tjd_start, tret[10];
-	char serr[AS_MAXCH], *starname = NULL; 
+	char serr[AS_MAXCH], *starname = NULL;
+	size_t s_len;
 	int i;
 	zval tret_arr;
 
@@ -1506,7 +1506,7 @@ PHP_FUNCTION(swe_lun_eclipse_when_loc)
 	char *arg = NULL;
 	int arg_len, rc, ifl;
 	double tjd_ut, geopos[3], tret[10], attr[20];
-	char serr[AS_MAXCH], *starname = NULL;
+	char serr[AS_MAXCH];
 	int i, backward;
 	zval tret_arr, attr_arr;
 
@@ -1717,10 +1717,11 @@ PHP_FUNCTION(swe_azalt_rev)
 PHP_FUNCTION(swe_rise_trans)
 {
 	char *arg = NULL;
-	int arg_len, rc, s_len;
+	int arg_len, rc;
 	long ipl, epheflag, rsmi;
 	double tjd_ut, geopos[3], tret[10], atpress, attemp;
-	char serr[AS_MAXCH], *starname = NULL; 
+	char serr[AS_MAXCH], *starname = NULL;
+	size_t s_len;
 	int i;
 	zval tret_arr;
 
@@ -1757,10 +1758,11 @@ PHP_FUNCTION(swe_rise_trans)
 PHP_FUNCTION(swe_rise_trans_true_hor)
 {
 	char *arg = NULL;
-	int arg_len, rc, s_len;
+	int arg_len, rc;
 	long ipl, epheflag, rsmi;
 	double tjd_ut, geopos[3], tret[10], atpress, attemp, horhgt;
-	char serr[AS_MAXCH], *starname = NULL; 
+	char serr[AS_MAXCH], *starname = NULL;
+	size_t s_len;
 	int i;
 	zval tret_arr;
 
