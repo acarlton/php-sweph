@@ -1077,7 +1077,7 @@ PHP_FUNCTION(swe_houses_armc)
 PHP_FUNCTION(swe_house_pos)
 {
 	char *arg = NULL;
-	int hsys_len;
+	size_t hsys_len;
 	char *hsys = NULL;
 	double armc, geolat, eps, xpin[2], rc;
 	char serr[AS_MAXCH]; 
@@ -1112,7 +1112,7 @@ ext_def(char *) swe_house_name(int hsys);
 */
 PHP_FUNCTION(swe_house_name)
 {
-	int hsys_len;
+	size_t hsys_len;
 	char *hsys = NULL;
 	char *name;
 	
